@@ -89,7 +89,7 @@ Hasil skor disimpulkan di dalam folder model dengan nama file format `district_r
 Untuk mempermudah pemantauan dan visualisasi peta risiko kebakaran lahan gambut berdasarkan prediksi model, kami telah mengembangkan dasbor interaktif berbasis web. 
 Anda dapat mengakses Dasbor Prediksi Kebakaran Lahan Gambut secara langsung pada tautan berikut:
 
-👉 **[Buka Dashboard Netlify ( https://peatland-fire-prediction-dashboard.netlify.app/ )](#)**
+👉 **Buka Dashboard Netlify  https://peatland-fire-prediction-dashboard.netlify.app/ **
 
 *Dashboard ini dideploy secara live menggunakan Netlify.*
 
