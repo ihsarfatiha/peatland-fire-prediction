@@ -280,7 +280,7 @@ Hasil akhir dari model diterapkan untuk menghitung **Skor Risiko Wilayah (0–10
 
 ---
 
-## 🌐 Web Dashboard Interaktif
+## 🌐 Web Dashboard Interaktif https://peatland-fire-prediction-dashboard.netlify.app/
 
 Untuk mendemokratisasi akses data bagi pemangku kebijakan, peneliti, dan publik, proyek ini dilengkapi dengan **Dashboard Web Interaktif** berbasis Glassmorphism Dark UI:
 
