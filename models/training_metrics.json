@@ -1,0 +1,67 @@
+{
+  "classifier": {
+    "roc_auc": 0.6089331844828795,
+    "precision": 0.024074074074074074,
+    "recall": 0.45614035087719296,
+    "f1": 0.04573438874230431,
+    "accuracy": 0.6722054380664653
+  },
+  "regressor": {
+    "mae": 0.017589300870895386,
+    "rmse": 0.1324383430031072,
+    "r2": 0.9989044070243835
+  },
+  "data": {
+    "train_samples": 23169,
+    "test_samples": 3310,
+    "train_fire_cases": 1184,
+    "test_fire_cases": 57,
+    "fire_prevalence_train": 0.05110276662782166,
+    "fire_prevalence_test": 0.017220543806646525
+  },
+  "features": [
+    "consecutive_dry_days",
+    "days_since_season_start",
+    "lst_max",
+    "mean_daily_rainfall",
+    "mean_lst",
+    "min_ndvi",
+    "total_rainfall_season",
+    "lst_anomaly",
+    "rainfall_deficit_30d",
+    "prov_0",
+    "prov_1",
+    "prov_2",
+    "prov_3",
+    "prov_4",
+    "prov_5",
+    "prov_6",
+    "prov_7",
+    "prov_8"
+  ],
+  "hyperparameters": {
+    "classifier": {
+      "clf__colsample_bytree": 0.8,
+      "clf__learning_rate": 0.1,
+      "clf__max_depth": 6,
+      "clf__min_child_weight": 1,
+      "clf__n_estimators": 200,
+      "clf__scale_pos_weight": 3,
+      "clf__subsample": 0.8
+    },
+    "regressor": {
+      "colsample_bytree": 1.0,
+      "learning_rate": 0.05,
+      "max_depth": 8,
+      "min_child_weight": 1,
+      "n_estimators": 300,
+      "subsample": 1.0
+    }
+  },
+  "warnings": [
+    "days_to_4mm_breach is a placeholder target computed as consecutive_dry_days / 2 in Phase 2",
+    "Regressor R\u00b2 will be artificially high (~0.85-0.95) - model is learning to halve an input feature",
+    "This validates pipeline correctness but does not demonstrate scientific predictive power",
+    "Real deployment requires actual 4mm cumulative rainfall breach date calculation"
+  ]
+}
