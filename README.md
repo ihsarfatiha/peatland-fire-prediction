@@ -51,14 +51,15 @@ Proyek ini menghadirkan **Sistem Prediksi Risiko Kebakaran Lahan Gambut Terpadu*
 
 ```mermaid
 graph TD
-    A[Citra Satelit MODIS LST, NDVI & CHIRPS Rainfall] --> B(Google Earth Engine Processing)
-    B --> C[Dataset Musim Kering 2015-2023 ~7 Juta Baris]
-    C --> D(PySpark Distributed ETL & Feature Engineering)
-    D --> E[Temporal Split: Train 2015-2021 | Test 2022-2023]
-    E --> F1[Task 1: Fire Occurrence Classifier]
-    E --> F2[Task 2: Days to Drought Regressor]
-    F1 & F2 --> G[District Risk Assessment Aggregation]
-    G --> H[Interactive Web Dashboard Live Map]
+    A["Citra Satelit MODIS LST, NDVI & CHIRPS Rainfall"] --> B["Google Earth Engine Processing"]
+    B --> C["Dataset Musim Kering 2015-2023 (~7 Juta Baris)"]
+    C --> D["PySpark Distributed ETL & Feature Engineering"]
+    D --> E["Temporal Split: Train (2015-2021) vs Test (2022-2023)"]
+    E --> F1["Task 1: Fire Occurrence Classifier"]
+    E --> F2["Task 2: Days to Drought Regressor"]
+    F1 --> G["District Risk Assessment Aggregation"]
+    F2 --> G
+    G --> H["Interactive Web Dashboard Live Map"]
 ```
 
 ---
@@ -82,26 +83,27 @@ Pipeline pengolahan data dibagi menjadi 4 fase terstruktur:
 
 ```mermaid
 flowchart LR
-    subgraph Fase 1: Data Acquisition
-        GEE[Google Earth Engine] -->|MODIS & CHIRPS| Raw[Raw Parquet Data]
-        FIRMS[NASA FIRMS Hotspots] -->|Confidence >80%| Labels[Fire Ground Truth]
+    subgraph Fase1["Fase 1: Data Acquisition"]
+        GEE["Google Earth Engine"] -->|MODIS & CHIRPS| Raw["Raw Parquet Data"]
+        FIRMS["NASA FIRMS Hotspots"] -->|Confidence >80%| Labels["Fire Ground Truth"]
     end
 
-    subgraph Fase 2: Big Data ETL
-        Raw & Labels --> PySpark[PySpark 4.0.3 Engine]
-        PySpark --> FE[Feature Engineering:<br/>• lst_anomaly<br/>• rainfall_deficit_30d<br/>• consecutive_dry_days<br/>• province_vector]
-        FE --> Split[Temporal Train/Test Split]
+    subgraph Fase2["Fase 2: Big Data ETL"]
+        Raw --> PySpark["PySpark 4.0.3 Engine"]
+        Labels --> PySpark
+        PySpark --> FE["Feature Engineering: LST Anomaly, Rainfall Deficit, etc."]
+        FE --> Split["Temporal Train/Test Split"]
     end
 
-    subgraph Fase 3: ML Modeling
-        Split -->|Train: 2015-2021| TrainPipe[SMOTE + GridSearch CV]
-        TrainPipe --> Models[Trained XGBoost / RF / LightGBM]
-        Split -->|Test: 2022-2023| Eval[Future Evaluation]
+    subgraph Fase3["Fase 3: ML Modeling"]
+        Split -->|Train 2015-2021| TrainPipe["SMOTE + GridSearch CV"]
+        TrainPipe --> Models["Trained XGBoost / RF / LightGBM"]
+        Split -->|Test 2022-2023| Eval["Future Evaluation"]
     end
 
-    subgraph Fase 4: Web Deployment
-        Models --> RiskCalc[District Risk Scoring CSV]
-        RiskCalc --> Dash[Netlify Web Dashboard]
+    subgraph Fase4["Fase 4: Web Deployment"]
+        Models --> RiskCalc["District Risk Scoring CSV"]
+        RiskCalc --> Dash["Netlify Web Dashboard"]
     end
 ```
 
@@ -135,7 +137,7 @@ flowchart LR
 
 Proyek ini menerapkan pendekatan **Dual-Model** untuk memberikan wawasan prediktif yang komprehensif:
 
-```
+```text
                                ┌────────────────────────────────────────────────────────┐
                                │                 Input Data Satelit                     │
                                │ (LST, NDVI, Rainfall Deficit, Hari Kering, dsb)        │
@@ -303,7 +305,7 @@ Untuk mendemokratisasi akses data bagi pemangku kebijakan, peneliti, dan publik,
 
 ## 📂 Struktur Direktori Proyek
 
-```
+```text
 peatland-fire-prediction/
 │
 ├── assets/                                  # Aset visual & gambar evaluasi untuk README
