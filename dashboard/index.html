@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Peatland Fire Prediction Dashboard — Indonesia</title>
+  <meta name="description" content="Dashboard interaktif prediksi risiko kebakaran lahan gambut di Indonesia menggunakan data satelit MODIS dan CHIRPS. Visualisasi data 669 titik pengamatan di Riau.">
+  
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔥</text></svg>">
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+  
+  <!-- Dashboard CSS -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- ===== NAVIGATION ===== -->
+  <nav class="navbar" id="navbar">
+    <div class="navbar-inner">
+      <a href="#" class="navbar-brand">
+        <span class="brand-icon">🔥</span>
+        <span class="brand-text">PeatFire Dashboard</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#hero" class="active">Beranda</a></li>
+        <li><a href="#map-section">Peta Risiko</a></li>
+        <li><a href="#peatland-section">Lahan Gambut</a></li>
+        <li><a href="#climate-section">Analisis Iklim</a></li>
+        <li><a href="#about-section">Tentang</a></li>
+      </ul>
+      <button class="nav-toggle" aria-label="Toggle navigation">☰</button>
+    </div>
+  </nav>
+
+  <!-- ===== HERO SECTION ===== -->
+  <section class="hero" id="hero">
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-badge">
+          <span class="pulse"></span>
+          Peatland Fire Risk Monitoring
+        </div>
+        <h1>
+          Prediksi Risiko Kebakaran<br>
+          <span class="gradient-text">Lahan Gambut Indonesia</span>
+        </h1>
+        <p class="hero-description">
+          Dashboard analitik berbasis data satelit MODIS (LST/NDVI) dan CHIRPS untuk memvisualisasikan 
+          risiko kebakaran lahan gambut di Sumatera dan Kalimantan. Dibangun menggunakan XGBoost dual-model.
+        </p>
+        
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon">🌿</div>
+            <div class="stat-value" data-counter="13.03" data-suffix="M Ha" data-decimals="2">0</div>
+            <div class="stat-label">Total Lahan Gambut</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">📍</div>
+            <div class="stat-value" data-counter="669" data-suffix=" Titik">0</div>
+            <div class="stat-label">Titik Pengamatan Riau</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">🌡️</div>
+            <div class="stat-value" data-counter="78" data-suffix=" Hari" data-decimals="0">0</div>
+            <div class="stat-label">Rata-rata Hari Kering</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">⚠️</div>
+            <div class="stat-value" data-counter="38" data-suffix="%" data-decimals="0">0</div>
+            <div class="stat-label">Titik Risiko Tinggi+</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== MAP SECTION ===== -->
+  <section id="map-section">
+    <div class="container">
+      <div class="section-header animate-on-scroll">
+        <div class="section-tag">🗺️ Peta Interaktif</div>
+        <h2>Peta Risiko Kebakaran Riau 2019</h2>
+        <p>669 titik pengamatan pada musim kering 2019. Warna menunjukkan tingkat risiko berdasarkan hari kering dan curah hujan.</p>
+      </div>
+      
+      <div class="glass-card animate-on-scroll">
+        <div class="card-header">
+          <div class="card-title">📍 Titik Risiko Kebakaran</div>
+          <div class="filter-group">
+            <button class="filter-btn map-filter-btn active" data-risk="all">Semua</button>
+            <button class="filter-btn map-filter-btn" data-risk="critical" style="color: #dc2626;">Kritis</button>
+            <button class="filter-btn map-filter-btn" data-risk="high" style="color: #f97316;">Tinggi</button>
+            <button class="filter-btn map-filter-btn" data-risk="moderate" style="color: #f59e0b;">Sedang</button>
+            <button class="filter-btn map-filter-btn" data-risk="low" style="color: #22c55e;">Rendah</button>
+          </div>
+        </div>
+        
+        <div id="fire-risk-map"></div>
+        
+        <div class="risk-legend">
+          <div class="legend-item">
+            <div class="legend-dot critical"></div>
+            <span>Kritis — ≥90 hari kering, hujan &lt;3mm/hari</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-dot high"></div>
+            <span>Tinggi — ≥80 hari kering ATAU ≥70 hari & hujan &lt;4mm</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-dot moderate"></div>
+            <span>Sedang — ≥60 hari kering, hujan &lt;5mm/hari</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-dot low"></div>
+            <span>Rendah — Kondisi relatif aman</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PEATLAND DATA SECTION ===== -->
+  <section id="peatland-section">
+    <div class="container">
+      <div class="section-header animate-on-scroll">
+        <div class="section-tag">🌿 Data Lahan Gambut</div>
+        <h2>Distribusi Lahan Gambut Indonesia</h2>
+        <p>Luas lahan gambut per provinsi dan pulau berdasarkan data spasial 2015–2024.</p>
+      </div>
+      
+      <div class="charts-grid">
+        <div class="glass-card animate-on-scroll">
+          <div class="card-header">
+            <div class="card-title">📊 Top 10 Provinsi</div>
+          </div>
+          <div class="chart-container" style="height: 400px;">
+            <canvas id="province-chart"></canvas>
+          </div>
+        </div>
+        
+        <div class="glass-card animate-on-scroll">
+          <div class="card-header">
+            <div class="card-title">🏝️ Distribusi per Pulau</div>
+          </div>
+          <div class="chart-container" style="height: 400px;">
+            <canvas id="island-chart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CLIMATE ANALYSIS SECTION ===== -->
+  <section id="climate-section">
+    <div class="container">
+      <div class="section-header animate-on-scroll">
+        <div class="section-tag">🌡️ Analisis Iklim</div>
+        <h2>Metrik Iklim Riau — Musim Kering 2019</h2>
+        <p>Distribusi variabel iklim dari 669 titik pengamatan di lahan gambut Riau.</p>
+      </div>
+      
+      <!-- Summary metrics -->
+      <div class="stats-grid animate-on-scroll" style="margin-bottom: 2rem;">
+        <div class="stat-card">
+          <div class="stat-icon">☀️</div>
+          <div class="stat-value" style="font-size: 1.5rem;">55–100</div>
+          <div class="stat-label">Rentang Hari Kering</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">🌧️</div>
+          <div class="stat-value" style="font-size: 1.5rem;">3.93 mm</div>
+          <div class="stat-label">Rata-rata Curah Hujan/Hari</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">🌡️</div>
+          <div class="stat-value" style="font-size: 1.5rem;">29.9°C</div>
+          <div class="stat-label">Rata-rata Suhu Permukaan</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">🌱</div>
+          <div class="stat-value" style="font-size: 1.5rem;">0.350</div>
+          <div class="stat-label">Rata-rata NDVI Minimum</div>
+        </div>
+      </div>
+      
+      <!-- Charts -->
+      <div class="charts-grid">
+        <div class="glass-card animate-on-scroll">
+          <div class="card-header">
+            <div class="card-title">☀️ Distribusi Hari Kering</div>
+          </div>
+          <div class="chart-container" style="height: 300px;">
+            <canvas id="dry-days-chart"></canvas>
+          </div>
+        </div>
+        
+        <div class="glass-card animate-on-scroll">
+          <div class="card-header">
+            <div class="card-title">🌧️ Distribusi Curah Hujan</div>
+          </div>
+          <div class="chart-container" style="height: 300px;">
+            <canvas id="rainfall-chart"></canvas>
+          </div>
+        </div>
+        
+        <div class="glass-card animate-on-scroll">
+          <div class="card-header">
+            <div class="card-title">🌡️ Hari Kering vs Suhu Permukaan</div>
+          </div>
+          <div class="chart-container" style="height: 350px;">
+            <canvas id="lst-chart"></canvas>
+          </div>
+        </div>
+        
+        <div class="glass-card animate-on-scroll">
+          <div class="card-header">
+            <div class="card-title">🌱 Curah Hujan vs NDVI</div>
+          </div>
+          <div class="chart-container" style="height: 350px;">
+            <canvas id="ndvi-chart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ABOUT SECTION ===== -->
+  <section id="about-section">
+    <div class="container">
+      <div class="section-header animate-on-scroll">
+        <div class="section-tag">ℹ️ Tentang Proyek</div>
+        <h2>Peatland Fire Prediction System</h2>
+        <p>Sistem prediksi risiko kebakaran lahan gambut berbasis big data dan machine learning.</p>
+      </div>
+      
+      <div class="about-grid animate-on-scroll">
+        <div class="about-card">
+          <div class="about-icon">🛰️</div>
+          <h3>Data Satelit</h3>
+          <p>Menggunakan data MODIS untuk Land Surface Temperature (LST) dan NDVI, serta CHIRPS untuk curah hujan. Total ~10TB data citra satelit diagregasi menjadi fitur musiman.</p>
+        </div>
+        <div class="about-card">
+          <div class="about-icon">⚡</div>
+          <h3>Big Data Pipeline</h3>
+          <p>Google Earth Engine untuk preprocessing citra, PySpark untuk agregasi fitur (~7 juta baris), dan pemisahan data train/test berdasarkan tahun (2015–2021 | 2022–2023).</p>
+        </div>
+        <div class="about-card">
+          <div class="about-icon">🤖</div>
+          <h3>Dual XGBoost Model</h3>
+          <p>Model klasifikasi untuk prediksi kemunculan api (binary) dan model regresi untuk prediksi hari sampai curah hujan di bawah 4mm/hari (continuous).</p>
+        </div>
+      </div>
+
+      <div class="glass-card animate-on-scroll" style="margin-top: 2rem;">
+        <div class="card-header">
+          <div class="card-title">📚 Referensi Ilmiah</div>
+        </div>
+        <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.75rem;">
+          <li style="color: var(--text-secondary); font-size: 0.9rem; padding: 0.5rem 0; border-bottom: 1px solid var(--border-glass);">
+            <strong style="color: var(--text-primary);">Field et al. (2016)</strong> — Risiko kebakaran meningkat nonlinear saat curah hujan &lt;4mm/hari
+          </li>
+          <li style="color: var(--text-secondary); font-size: 0.9rem; padding: 0.5rem 0; border-bottom: 1px solid var(--border-glass);">
+            <strong style="color: var(--text-primary);">Nurdiati et al. (2024)</strong> — Metode machine learning untuk prediksi kebakaran di Kalimantan
+          </li>
+          <li style="color: var(--text-secondary); font-size: 0.9rem; padding: 0.5rem 0;">
+            <strong style="color: var(--text-primary);">Prayoga et al. (2024)</strong> — Sistem peringatan dini berbasis threshold untuk Riau
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="container">
+      <p>
+        🔥 Peatland Fire Prediction Dashboard — Big Data Course Project<br>
+        <span style="color: var(--text-muted);">Data: MODIS LST/NDVI • CHIRPS Rainfall • 2015–2024</span>
+      </p>
+    </div>
+  </footer>
+
+  <!-- ===== SCRIPTS ===== -->
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+  
+  <!-- Dashboard Modules -->
+  <script src="js/data.js"></script>
+  <script src="js/map.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
