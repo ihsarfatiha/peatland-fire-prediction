@@ -1,0 +1,13 @@
+# Windows system files
+desktop.ini
+Thumbs.db
+*.tmp
+
+# Python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# IDE
+.vscode/
+.idea/
