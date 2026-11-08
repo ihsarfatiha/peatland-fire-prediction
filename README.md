@@ -409,6 +409,5 @@ npx serve dashboard
 **Dikembangkan untuk Proyek Sains Data & Big Data — Prediksi Kebakaran Lahan Gambut Indonesia**  
 *Mendukung mitigasi perubahan iklim dan pelestarian ekosistem lahan basah tropis.*
 
-⭐ **Beri Star pada repositori ini jika bermanfaat!** ⭐
 
 </div>
